@@ -155,10 +155,10 @@ const DashboardNavbar = ({ user }) => {
           <button
             onClick={toggleDarkMode}
             className="text-xl hover:scale-110 transition-transform"
+            title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             {darkMode ? "☀️" : "🌙"}
           </button>
-
           {/* Bell — Notifications */}
           <div className="relative" ref={notifRef}>
             <button
@@ -257,55 +257,55 @@ const DashboardNavbar = ({ user }) => {
           <span className="text-lg font-bold text-primary">SkillSync</span>
         </div>
 
-          {/* User Avatar + Dropdown */}
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => {
-                setShowDropdown(!showDropdown);
-                setShowNotifs(false);
-              }}
-              className="w-9 h-9 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center hover:bg-indigo-600"
-            >
-              {user?.fullName?.charAt(0).toUpperCase() || "U"}
-            </button>
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50">
-                <div className="px-4 py-3 border-b dark:border-gray-700">
-                  <p className="font-semibold text-primary dark:text-white">
-                    {user?.fullName}
-                  </p>
-                  <p className="text-xs text-muted dark:text-gray-400">
-                    {user?.email}
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setShowDropdown(false);
-                    navigate("/profile");
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
-                >
-                  👤 Profile
-                </button>
-                <button
-                  onClick={() => {
-                    setShowDropdown(false);
-                    navigate("/settings");
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
-                >
-                  ⚙️ Settings
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm text-red-600"
-                >
-                  🚪 Logout
-                </button>
+        {/* User Avatar + Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => {
+              setShowDropdown(!showDropdown);
+              setShowNotifs(false);
+            }}
+            className="w-9 h-9 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center hover:bg-indigo-600"
+          >
+            {user?.fullName?.charAt(0).toUpperCase() || "U"}
+          </button>
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50">
+              <div className="px-4 py-3 border-b dark:border-gray-700">
+                <p className="font-semibold text-primary dark:text-white">
+                  {user?.fullName}
+                </p>
+                <p className="text-xs text-muted dark:text-gray-400">
+                  {user?.email}
+                </p>
               </div>
-            )}
-          </div>
+              <button
+                onClick={() => {
+                  setShowDropdown(false);
+                  navigate("/profile");
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
+              >
+                👤 Profile
+              </button>
+              <button
+                onClick={() => {
+                  setShowDropdown(false);
+                  navigate("/settings");
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
+              >
+                ⚙️ Settings
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm text-red-600"
+              >
+                🚪 Logout
+              </button>
+            </div>
+          )}
         </div>
+      </div>
     </header>
   );
 };

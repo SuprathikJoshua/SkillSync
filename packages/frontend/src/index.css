@@ -1,9 +1,20 @@
 @import "tailwindcss";
-
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ── Dark theme tokens — the only theme ── */
-:root,
+/* ── Light theme (default when .dark is NOT on <html>) ── */
+:root {
+  --bg-primary:    #f9fafb;
+  --bg-secondary:  #f3f4f6;
+  --bg-card:       #ffffff;
+  --text-primary:  #111827;
+  --text-secondary:#374151;
+  --text-muted:    #6b7280;
+  --border:        #e5e7eb;
+  --sidebar-bg:    #ffffff;
+  --navbar-bg:     #ffffff;
+}
+
+/* ── Dark theme (when .dark IS on <html>) ── */
 .dark {
   --bg-primary:    #030712;
   --bg-secondary:  #0f172a;
@@ -18,7 +29,7 @@
 
 /* ── Global transitions ── */
 *, *::before, *::after {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* ── Apply tokens globally ── */
@@ -61,23 +72,6 @@ body {
   padding: 2rem;
   max-width: 80rem;
   margin: 0 auto;
-}
-
-/* ── Consistent page layout ── */
-.page-wrapper {
-  padding-top: 4rem;
-  padding-left: 15rem;
-  min-height: 100vh;
-  background-color: var(--bg-primary);
-}
-.page-inner {
-  padding: 2.5rem;
-}
-.page-header-banner {
-  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 2rem 2.5rem 1.5rem;
-  margin-bottom: 0;
 }
 
 /* ── Consistent page layout ── */
