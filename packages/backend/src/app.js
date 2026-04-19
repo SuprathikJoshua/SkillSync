@@ -83,7 +83,7 @@ app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/progress", progressRoute);
 app.use("/api/v1/badges", badgesRoute);
 app.use("/api/v1/matchmaking", matchmakingRoute);
-app.use("/api/v1/notfications", notificationsRoute);
+app.use("/api/v1/notifications", notificationsRoute);
 
 // Upload route (only if multer installed)
 try {

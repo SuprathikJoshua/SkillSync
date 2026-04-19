@@ -120,7 +120,12 @@ export const refreshTokenController = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid refresh token");
   }
 
-  if (incomingRefreshToken !== user.refreshTokenHash) {
+  const isRefreshTokenValid = await bcrypt.compare(
+    incomingRefreshToken,
+    user.refreshTokenHash,
+  );
+
+  if (!isRefreshTokenValid) {
     throw new ApiError(401, "Refresh token is expired or used");
   }
 

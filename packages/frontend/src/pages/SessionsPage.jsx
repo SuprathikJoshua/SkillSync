@@ -44,7 +44,7 @@ const SessionsPage = () => {
 
   const handleStatus = async (id, status) => {
     try {
-      const res = await API.patch(`/sessions/${id}/status`, { status });
+      const res = await API.put(`/sessions/${id}/status`, { status });
       setSessions(sessions.map(s => s._id===id ? res.data.data : s));
       toast.success(`Session ${status}!`);
     } catch { toast.error("Failed to update"); }
