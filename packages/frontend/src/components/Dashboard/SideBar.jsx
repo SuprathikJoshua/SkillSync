@@ -149,7 +149,7 @@ const NAV = [
   },
   {
     name: "Chat",
-    path: "/matchmaking",
+    path: "/chat",
     icon: (
       <svg
         width="18"
@@ -243,8 +243,8 @@ const Sidebar = () => {
       <nav className="p-3 space-y-0.5">
         {navItems.map(({ name, path, icon }) => {
           const active =
-            location.pathname === path ||
-            (name === "Chat" && location.pathname.startsWith("/chat"));
+            location.pathname.startsWith(path === "/chat" ? "/chat" : path) ||
+            location.pathname === path;
           return (
             <button
               key={name}
