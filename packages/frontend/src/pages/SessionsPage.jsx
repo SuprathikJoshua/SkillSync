@@ -45,15 +45,27 @@ const SessionsPage = () => {
   });
 
   useEffect(() => {
-    Promise.all([API.get("/sessions"), API.get("/users"), API.get("/skills")])
-      .then(([s, us, sk]) => {
+    Promise.all([API.get("/sessions"), API.get("/skills")])
+      .then(([s, sk]) => {
         setSessions(s.data.data || []);
-        setUsers(us.data.data || []);
         setSkills(sk.data.data || []);
       })
       .catch(() => toast.error("Failed to load"))
       .finally(() => setLoading(false));
   }, []);
+
+  // Fetch users only when create modal is opened
+  const handleOpenModal = async () => {
+    if (users.length === 0) {
+      try {
+        const res = await API.get("/matchmaking");
+        setUsers(res.data.data || []);
+      } catch {
+        setUsers([]);
+      }
+    }
+    setShowModal(true);
+  };
 
   const handleCreate = async () => {
     if (
@@ -144,7 +156,7 @@ const SessionsPage = () => {
               </p>
             </div>
             <button
-              onClick={() => setShowModal(true)}
+              onClick={handleOpenModal}
               className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold"
               style={{
                 background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
@@ -215,7 +227,7 @@ const SessionsPage = () => {
                 <p className="text-4xl mb-3">📅</p>
                 <p className="text-secondary font-medium">No sessions found</p>
                 <button
-                  onClick={() => setShowModal(true)}
+                  onClick={handleOpenModal}
                   className="mt-4 px-4 py-2 rounded-xl text-white text-sm font-semibold"
                   style={{
                     background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
@@ -282,8 +294,8 @@ const SessionsPage = () => {
                               day: "numeric",
                               month: "short",
                               year: "numeric",
-                            })}{" "}
-                            ·{" "}
+                            })}
+                            {" · "}
                             {new Date(s.startTime).toLocaleTimeString("en-IN", {
                               hour: "2-digit",
                               minute: "2-digit",

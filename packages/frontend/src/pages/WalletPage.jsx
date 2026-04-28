@@ -3,9 +3,11 @@ import API from "../api/axios";
 import toast from "react-hot-toast";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar.jsx";
 import Sidebar from "../components/Dashboard/SideBar.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const TX_CONFIG = {
   transfer: { icon: "↗️", label: "Transfer Sent", color: "text-red-500" },
+  earn: { icon: "🎓", label: "Session Earned", color: "text-green-600" },
   reward: { icon: "🎁", label: "Reward Received", color: "text-green-600" },
   credit: { icon: "⬆️", label: "Credit", color: "text-green-600" },
   debit: { icon: "⬇️", label: "Debit", color: "text-red-500" },
@@ -13,6 +15,7 @@ const TX_CONFIG = {
 
 const isCredit = (tx, userId) =>
   tx.transactionType === "reward" ||
+  tx.transactionType === "earn" ||
   (tx.transactionType === "transfer" &&
     tx.toUser?._id?.toString() === userId?.toString());
 
@@ -24,12 +27,9 @@ const TransactionRow = ({ tx, userId }) => {
 
   return (
     <div className="flex items-center gap-4 py-3.5 border-b border-[var(--border)] last:border-0">
-      {/* Icon */}
       <div className="w-10 h-10 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center text-lg flex-shrink-0">
         {config.icon}
       </div>
-
-      {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-[var(--text-primary)]">
           {config.label}
@@ -51,8 +51,6 @@ const TransactionRow = ({ tx, userId }) => {
           })}
         </p>
       </div>
-
-      {/* Amount */}
       <span
         className={`text-sm font-bold flex-shrink-0 ${credit ? "text-green-500" : "text-red-500"}`}
       >
@@ -64,7 +62,7 @@ const TransactionRow = ({ tx, userId }) => {
 };
 
 const WalletPage = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -97,15 +95,10 @@ const WalletPage = () => {
     const fetchData = async () => {
       try {
         await Promise.all([
-          API.get("/auth/current-user"),
           API.get("/wallet"),
-          API.get("/users"),
           API.get("/wallet/transactions"),
-        ]).then(([userRes, walletRes, usersRes, txRes]) => {
-          // 4th result now used
-          setUser(userRes.data.data);
+        ]).then(([walletRes, txRes]) => {
           setWallet(walletRes.data.data);
-          setUsers(usersRes.data.data || []);
           setTransactions(txRes.data.data || []);
           setTxLoading(false);
         });
@@ -117,6 +110,19 @@ const WalletPage = () => {
     };
     fetchData();
   }, []);
+
+  // Fetch users only when transfer modal is opened
+  const handleOpenTransfer = async () => {
+    if (users.length === 0) {
+      try {
+        const res = await API.get("/matchmaking");
+        setUsers(res.data.data || []);
+      } catch {
+        setUsers([]);
+      }
+    }
+    setShowTransferModal(true);
+  };
 
   const handleTransfer = async () => {
     if (!transferData.toUserId || !transferData.amount) {
@@ -191,7 +197,7 @@ const WalletPage = () => {
               <p className="text-indigo-200">SkillSync Tokens</p>
               <div className="flex gap-3 mt-6">
                 <button
-                  onClick={() => setShowTransferModal(true)}
+                  onClick={handleOpenTransfer}
                   className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors"
                 >
                   ↗️ Send Tokens
@@ -298,7 +304,7 @@ const WalletPage = () => {
                       No transactions yet.
                     </p>
                     <p className="text-[var(--text-muted)] text-xs mt-1 opacity-60">
-                      Transfer tokens or complete sessions to see history.
+                      Complete sessions or transfer tokens to see history.
                     </p>
                   </div>
                 ) : (
