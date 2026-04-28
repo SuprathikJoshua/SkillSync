@@ -170,6 +170,7 @@ const App = () => (
           </Protected>
         }
       />
+      <Route path="/chat" element={<Navigate to="/matchmaking" replace />} />
       <Route
         path="/chat/:userId"
         element={
