@@ -16,6 +16,7 @@ import progressRoute from "./routes/progress.route.js";
 import badgesRoute from "./routes/badges.route.js";
 import matchmakingRoute from "./routes/matchmaking.route.js";
 import notificationsRoute from "./routes/notification.route.js";
+import chatRoute from "./routes/chat.route.js";
 
 const app = express();
 
@@ -84,6 +85,7 @@ app.use("/api/v1/progress", progressRoute);
 app.use("/api/v1/badges", badgesRoute);
 app.use("/api/v1/matchmaking", matchmakingRoute);
 app.use("/api/v1/notifications", notificationsRoute);
+app.use("/api/v1/chat", chatRoute);
 
 // Upload route (only if multer installed)
 try {

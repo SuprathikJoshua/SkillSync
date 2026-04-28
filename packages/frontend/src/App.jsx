@@ -20,22 +20,20 @@ import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import FeedbackPage from "./pages/FeedbackPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import ChatPage from "./pages/ChatPage.jsx";
 
-// Requires login
 const Protected = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
   return user ? children : <Navigate to="/login" replace />;
 };
 
-// Redirect logged-in users away from login/signup
 const GuestOnly = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
   return user ? <Navigate to="/dashboard" replace /> : children;
 };
 
-// Requires login AND Admin role
 const AdminOnly = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
@@ -169,6 +167,14 @@ const App = () => (
         element={
           <Protected>
             <SettingsPage />
+          </Protected>
+        }
+      />
+      <Route
+        path="/chat/:userId"
+        element={
+          <Protected>
+            <ChatPage />
           </Protected>
         }
       />
