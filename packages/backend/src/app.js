@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
+import passport from "passport";
 
 import authRoute from "./routes/auth.route.js";
 import userRoute from "./routes/user.route.js";
@@ -16,6 +17,7 @@ import progressRoute from "./routes/progress.route.js";
 import badgesRoute from "./routes/badges.route.js";
 import matchmakingRoute from "./routes/matchmaking.route.js";
 import notificationsRoute from "./routes/notification.route.js";
+import chatRoute from "./routes/chat.route.js";
 
 const app = express();
 
@@ -69,6 +71,7 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use("/api/v1/auth", authLimiter, authRoute);
@@ -83,7 +86,8 @@ app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/progress", progressRoute);
 app.use("/api/v1/badges", badgesRoute);
 app.use("/api/v1/matchmaking", matchmakingRoute);
-app.use("/api/v1/notfications", notificationsRoute);
+app.use("/api/v1/notifications", notificationsRoute);
+app.use("/api/v1/chat", chatRoute);
 
 // Upload route (only if multer installed)
 try {

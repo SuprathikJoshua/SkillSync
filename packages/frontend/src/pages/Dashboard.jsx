@@ -3,9 +3,10 @@ import DashboardNavbar from "../components/Dashboard/DashboardNavbar.jsx";
 import Sidebar from "../components/Dashboard/SideBar.jsx";
 import DashboardContent from "../components/Dashboard/DashboardContent.jsx";
 import API from "../api/axios";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [progress, setProgress] = useState(null);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,15 +14,13 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [userRes, progressRes, requestsRes] = await Promise.all([
-          API.get("/auth/current-user"),
+        const [progressRes, requestsRes] = await Promise.all([
           API.get("/progress"),
           API.get("/requests"),
         ]);
-        setUser(userRes.data.data);
         setProgress(progressRes.data.data);
         setRequests(requestsRes.data.data);
-      } catch {
+      } catch (error) {
         console.error("Failed to fetch dashboard data", error);
       } finally {
         setLoading(false);
