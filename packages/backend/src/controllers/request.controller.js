@@ -33,23 +33,32 @@ export const getAllRequestsController = asyncHandler(async (req, res) => {
 export const addRequestController = asyncHandler(async (req, res) => {
   const { toUserId, message, skillId } = req.body;
   const fromUserId = req.user._id;
-  if (!skillId || !toUserId) {
+
+  if (!skillId || !toUserId)
     throw new ApiError(400, "toUserId and skillId are required");
-  }
-  const addRequest = await addRequestService(
-    fromUserId,
-    toUserId,
-    message,
-    skillId,
-  );
 
-  if (!addRequest) {
-    throw new ApiError(500, "Failed to add request. Please try again later.");
+  try {
+    const addRequest = await addRequestService(
+      fromUserId,
+      toUserId,
+      message,
+      skillId,
+    );
+    if (!addRequest)
+      throw new ApiError(500, "Failed to add request. Please try again later.");
+    res
+      .status(200)
+      .json(new ApiResponse(200, addRequest, "Request added successfully"));
+  } catch (err) {
+    // Mongo duplicate key error
+    if (err.code === 11000) {
+      throw new ApiError(
+        409,
+        "You have already sent a request to this user for this skill",
+      );
+    }
+    throw err;
   }
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, addRequest, "Request added successfully"));
 });
 /**
  *

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
+import passport from "passport";
 
 import authRoute from "./routes/auth.route.js";
 import userRoute from "./routes/user.route.js";
@@ -40,6 +41,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(passport.initialize());
 
 // ── Rate limiting — disabled in dev ──────────────────────────────────────────
 const isProd = process.env.NODE_ENV === "production";

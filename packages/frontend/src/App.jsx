@@ -21,6 +21,7 @@ import FeedbackPage from "./pages/FeedbackPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
+import OAuthCallbackPage from "./pages/OAuthCallbackPage.jsx";
 
 const Protected = ({ children }) => {
   const { user, loading } = useAuth();
@@ -66,6 +67,7 @@ const App = () => (
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
       <Route
         path="/skills-wanted"
         element={
