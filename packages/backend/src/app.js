@@ -41,7 +41,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(passport.initialize());
 
 // ── Rate limiting — disabled in dev ──────────────────────────────────────────
 const isProd = process.env.NODE_ENV === "production";
@@ -72,6 +71,7 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use("/api/v1/auth", authLimiter, authRoute);
