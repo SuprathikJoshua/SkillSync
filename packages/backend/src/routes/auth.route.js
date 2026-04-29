@@ -15,56 +15,54 @@ import {
   googleCallbackController,
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
-import { User } from "../models/user.models.js";
 
 const router = Router();
 
-// ─── Google OAuth setup ──────────────────────────────────────────────────────
-passport.use(
-  new GoogleStrategy(
+// ─── Google OAuth — lazy init so env vars are loaded first ───────────────────
+const initGoogleStrategy = () => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.warn("⚠️  Google OAuth env vars missing — /auth/google disabled");
+    return;
+  }
+  passport.use(new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientID:     process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:
-        process.env.GOOGLE_CALLBACK_URL ||
-        "http://localhost:8000/api/v1/auth/google/callback",
+      callbackURL:  process.env.GOOGLE_CALLBACK_URL || "http://localhost:8000/api/v1/auth/google/callback",
     },
-    (accessToken, refreshToken, profile, done) => done(null, profile),
-  ),
-);
+    (accessToken, refreshToken, profile, done) => done(null, profile)
+  ));
+  passport.serializeUser((user, done) => done(null, user));
+  passport.deserializeUser((user, done) => done(null, user));
+};
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+initGoogleStrategy();
 
-// ─── Standard auth routes ────────────────────────────────────────────────────
-router.post("/register", registerUserController);
-router.post("/login", loginUserController);
-router.get("/current-user", verifyJWT, getCurrentUserController);
-router.post("/refresh-token", refreshTokenController);
+// ─── Standard routes ─────────────────────────────────────────────────────────
+router.post("/register",                  registerUserController);
+router.post("/login",                     loginUserController);
+router.get("/current-user",  verifyJWT,   getCurrentUserController);
+router.post("/refresh-token",             refreshTokenController);
 router.post("/change-password", verifyJWT, changePasswordController);
-router.post("/logout", verifyJWT, logoutUserController);
-router.post("/forgot-password", forgotPasswordController);
-router.post("/reset-password", resetPasswordController);
-router.post(
-  "/resend-email-verification",
-  verifyJWT,
-  sendVerificationEmailController,
-);
-router.get("/verify-email/:token", verifyEmailController);
+router.post("/logout",       verifyJWT,   logoutUserController);
+router.post("/forgot-password",           forgotPasswordController);
+router.post("/reset-password",            resetPasswordController);
+router.post("/resend-email-verification", verifyJWT, sendVerificationEmailController);
+router.get("/verify-email/:token",        verifyEmailController);
 
-// ─── Google OAuth routes ─────────────────────────────────────────────────────
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
+// ─── Google OAuth routes ──────────────────────────────────────────────────────
+router.get("/google",
+  (req, res, next) => {
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res.status(503).json({ message: "Google OAuth not configured" });
+    }
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+  }
 );
 
-router.get(
-  "/google/callback",
-  passport.authenticate("google", {
-    session: false,
-    failureRedirect: "/login",
-  }),
-  googleCallbackController,
+router.get("/google/callback",
+  passport.authenticate("google", { session: false, failureRedirect: "/login" }),
+  googleCallbackController
 );
 
 export default router;
