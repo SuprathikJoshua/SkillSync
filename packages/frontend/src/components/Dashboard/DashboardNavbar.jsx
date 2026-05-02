@@ -92,7 +92,7 @@ const DashboardNavbar = ({ user }) => {
   return (
     <header className="navbar fixed top-0 left-0 right-0 h-16 z-40">
       <div className="flex items-center justify-between h-full px-6">
-        <Logo />
+        {/* <Logo /> */}
         <div className="flex items-center space-x-5 text-muted">
           <button
             onClick={toggleDarkMode}
@@ -151,7 +151,7 @@ const DashboardNavbar = ({ user }) => {
                         onClick={() => handleNotifClick(n)}
                         className={`flex items-start gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 border-b dark:border-gray-700 last:border-0 transition-colors ${!n.isRead ? "bg-indigo-50 dark:bg-indigo-900/20" : ""}`}
                       >
-                        <span className="text-xl flex-shrink-0 mt-0.5">
+                        <span className="text-xl shrink-0 mt-0.5">
                           {NOTIF_ICONS[n.type] || "🔔"}
                         </span>
                         <div className="flex-1 min-w-0">
@@ -174,7 +174,7 @@ const DashboardNavbar = ({ user }) => {
                         </div>
                         <button
                           onClick={(e) => handleDeleteNotif(e, n._id)}
-                          className="text-gray-300 hover:text-red-400 text-lg leading-none flex-shrink-0 mt-0.5"
+                          className="text-gray-300 hover:text-red-400 text-lg leading-none shrink-0 mt-0.5"
                         >
                           ×
                         </button>
