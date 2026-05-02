@@ -65,6 +65,7 @@ const authLimiter = rateLimit({
 });
 
 app.use(limiter);
+app.set("trust proxy", 1); // trust first proxy
 
 // ── Body parsers ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: "16kb" }));
